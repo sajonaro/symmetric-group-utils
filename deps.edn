@@ -2,4 +2,8 @@
  :deps {org.clojure/clojure    {:mvn/version "1.11.1"}
         org.clojure/tools.cli  {:mvn/version "1.0.206"}}
  :aliases {:test  {:extra-deps {lambdaisland/kaocha {:mvn/version "1.68.1059"}}
-                   :main-opts ["-m" "kaocha.runner"]}}}
+                   :main-opts ["-m" "kaocha.runner"]}
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.6.2" :git/sha "226fb52"}}
+                   :ns-default build}}}
+
+
