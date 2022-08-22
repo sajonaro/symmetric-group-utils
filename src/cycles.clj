@@ -49,7 +49,7 @@
 
 
 (defn gen-all-cycles-by-part [partition]
-  "given a partition i.e. a list of weakkly decreasing integers
+  "given a partition i.e. a list of weakly decreasing integers
    generate all cyclic permutations of type described by this permutation
    e.g. for a permuation (3,1,1) possible cycles are
    (1 2 3)(4)(5)
@@ -74,4 +74,5 @@
 
 (gen-all-cycles-by-part '(3 2 1))
 (gen-all-cycles-by-part '(3 1))
+(gen-all-cycles-by-part '(3 1 1))
 (rotate-cycle-right '(1 ))
