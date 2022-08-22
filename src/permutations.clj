@@ -1,16 +1,15 @@
-(ns permutations
-  (:require [partitions :as ptns] [cycles :as ccls]))
+(ns permutations)
 
-
-(defn gen-permutations [collection]
+(defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
-   for exaple, ( 1 2 3) -> ( (1 2 3), (3,2,1))"
-  ())
+   for exaple, ( 1 2 3) -> ( (1 2 3)(3 2 1)(1 3 2)(2 1 3) (2 3 1))"
+  (lazy-seq
+   (if (seq (rest coll))
+     (apply concat (for [x coll]
+                     (map #(cons x %)
+                          (gen-permutations (remove #{x} coll)))))
+     [coll])))
 
 
-(defn gen-all-cycles-by-part [partition]
-  "given a partition i.e. a list of wearkly decreasing integers
-   generate all cyclic permutations of type described by this permutation
-   e.g. for a permuation (3,1,1) possible cycles are
-   (1 2 3)(4)(5) "
-  ())
+;;;some tests
+(count (gen-permutations '(1 2 3)))
