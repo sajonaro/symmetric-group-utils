@@ -2,13 +2,16 @@
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
-   for exaple, ( 1 2 3) -> ( (1 2 3)(3 2 1)(1 3 2)(2 1 3) (2 3 1))"
+   for exaple, (1 2 3) -> ((1 2 3)(3 2 1)(1 3 2)(2 1 3) (2 3 1)(3 1 2))"
   (lazy-seq
    (if (seq (rest coll))
      (apply concat (for [x coll]
                      (map #(cons x %)
                           (gen-permutations (remove #{x} coll)))))
      [coll])))
+
+;;;some tests
+(count (gen-permutations '(1 2 3))) ;;should be = 6
 
 
 (defn single-cycle-to-permutation-helper [c]
@@ -64,19 +67,27 @@
 (cycle-to-permutation '((3 2 1)))
 
 
-(defn muliply[p1 p2]
+(defn muliply-cycles-to-permutation[c1 c2]
   "Symmetric group * operation, i.e. multiplication of two permutations
-   defined as p1*p2 = p3,  such as p3 is the permutation equivalent to applying 
-   conseecutively permutaion p1 after p2 ( right to left).
-   p1,p2 are defined in cycle notation
+   defined as c1*c2 = p3,  such as p3 is the permutation equivalent to applying 
+   conseecutively permutaion c1 after c2 ( right to left).
+   c1,c2 are defined in cycle notation
    examples:
-   p1=(1 2)(3), p2 = (1)(2 3) ->  (1 2)(3)
-   (1 2), (1 2 3)             ->  (1)(2 3)
-   (1 2 3),(1 2)              ->  (1 3)(2)
-   (1 3)(2),(1 3)(2)          ->  (1)(2)(3)
+   c1=(1 2)(3), c2 = (1)(2 3) ->  (2 3 1)
+   (1 2)(3), (1 2 3)          ->  (1 3 2)
+   (1 2 3),(1 2)(3)           ->  (3 2 1)
+   (1 3)(2),(1 3)(2)          ->  (1 2 3)
    (1 2 3)(1 2 3)             ->  (3 1 2)  
-   
-   ")
+   "
+  (let[a (cycle-to-permutation c1)
+       b (cycle-to-permutation c2)]
+    (map #(nth a (dec %)) b)))
+
 
 ;;;some tests
-(count (gen-permutations '(1 2 3)))
+
+(muliply-cycles-to-permutation '((1 2 3)) '((1 2 3)))
+(muliply-cycles-to-permutation '((1 2)(3)) '((1)(2 3)))
+(muliply-cycles-to-permutation '((1 2)(3)) '((1 2 3)))
+(muliply-cycles-to-permutation '((1 2 3)) '((1 2)(3)))
+(muliply-cycles-to-permutation '((1 3)(2)) '((1 3)(2)))
