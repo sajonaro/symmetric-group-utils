@@ -1,4 +1,5 @@
-(ns permutations)
+(ns permutations
+  (:require [clojure.pprint :as pp]))
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
@@ -103,3 +104,27 @@
 
 
 (multiply-permutations '( 1 2 3) '(3 2 1))
+
+
+
+  (defn permutation-to-mapset [p]
+    "turn a ( x1 ....xn) pemutation into
+   a map-set with keys representing
+   position and value - corresponding xi"
+    (loop [res {} i 0]
+      (if (= (count p) (inc i))
+        (assoc res (keyword (str (inc i))) (nth p i))
+        (recur (assoc res (keyword (str (inc i))) (nth p i)) (inc i)))))
+
+
+;;;some tests
+(permutation-to-mapset '(2 3 1 4))
+
+
+
+(defn print-permutation [p]
+  "pretty prints a pemutaion in table form"
+  (pp/print-table  [(permutation-to-mapset p)]))
+
+;;;some tests
+(print-permutation '( 2 4 1 3))
