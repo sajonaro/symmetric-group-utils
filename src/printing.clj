@@ -4,7 +4,7 @@
 
 
   (defn permutation-to-mapset [p]
-  "turn a ( x1 ....xn) pemutation into
+  "turn a ( x1 ....xn) permutation into
    a map-set with keys representing
    position and value - corresponding xi"
     (loop [res {} i 0]
