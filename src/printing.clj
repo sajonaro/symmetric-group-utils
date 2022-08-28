@@ -25,13 +25,21 @@
 (permutation-print '(2 4 1 3))
 
 
-(defn map-transform-all-by-value[els func value]
+(defn map-group-transform[els transform value]
   "apply func to every value in the map
+   and find corresponding group element for resulting value
+  (assumption is - els contains all group members, keys - names
+   vals - their corresponding values) 
    func is binary function, first operand is val second - value
    "
-  (zipmap (keys els) (map #(func value %) (vals els))))
-
-(map-transform-all-by-value {:1 2 :3 4} * 4)
+  (let [rev-els (clojure.set/map-invert els)]
+   (zipmap
+    (keys els)
+    (map #(rev-els %) (map #(transform value %) (vals els)))))
+)
+  
+(clojure.set/map-invert {:1 2 :3 4 :5 2})
+(map-group-transform {:1 2 :3 4 :5 2} * 2)
 
 (defn print-multiplication-table [els func] 
   " Print a multiplication table of values
@@ -57,7 +65,7 @@
      (recur (inc i)
             (conj res 
                   (merge {nil (nth (keys els) (dec i))}
-                           (map-transform-all-by-value 
+                           (map-group-transform 
                              els
                              func
                              (els (nth (keys els) (dec i))))))))))

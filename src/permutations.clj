@@ -99,7 +99,8 @@
    examples:
    (1 2 3), (3 2 1)           ->  (3 2 1)
    "
-    (map #(nth p1 (dec %)) p2))
+    (seq
+     (map #(nth p1 (dec %)) p2)))
 
 
 (multiply-permutations '( 1 2 3) '(3 2 1))
