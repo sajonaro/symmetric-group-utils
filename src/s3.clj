@@ -13,8 +13,14 @@
       '(g1 g2 g3 g4 g5)
       (next (p/gen-permutations '(1 2 3))))))
 
-(pp/pprint s3members (io/writer "output/s3.txt"))
+  ;;;print group details into file
+  (pp/pprint s3members (io/writer "output/s3.txt"))
+  
 
-  
-  
-(prnt/print-multiplication-table s3members p/multiply-permutations)
+   ;;; print group multiplication table
+  (prnt/multiplication-table-print-to-file 
+   s3members
+   p/multiply-permutations
+   "output/s3.txt"
+   true)
+   
