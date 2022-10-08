@@ -1,4 +1,5 @@
-(ns permutations)
+(ns permutations
+  (:require [clojure.set :refer :all ]))
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
@@ -104,4 +105,21 @@
 
 
 (multiply-permutations '( 1 2 3) '(3 2 1))
+
+
+;;;for a P calculate R = P^(-1)
+;;;(such that p*r = i = r*p)
+;;; e.g. (2 1 3) -> (2 1 3)
+;;;      (3 2 1) -> (3 2 1)
+;;;      (3 1 2) -> (2 3 1)
+(defn get-inverted-permutation[p]
+  (->> (seq p)
+       (zipmap (range 1 (inc (count p))))
+       (map-invert)
+       (into (sorted-map))
+       (vals)))
+  
+
+(get-inverted-permutation '(3 1 2 ))
+(get-inverted-permutation '(3 2 1))
 
