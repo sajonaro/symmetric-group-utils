@@ -1,5 +1,6 @@
 (ns permutations
-  (:require [clojure.set :refer :all ]))
+  (:require [clojure.set :refer :all ]
+            [permutations :as p]))
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
@@ -40,8 +41,22 @@
         (recur (assoc (assoc res (keyword (str (last ccl))) (first c)) (keyword (str (first ccl))) (second ccl)) (rest ccl)))))   
 
 
-(defn cycle-to-permutation [c]
-  "converts a group Sn element from cycle to 
+(defn dot
+  "Symmetric group operation *, i.e. multiplication 
+   of two or more permutations
+   defined as p1*p2 = p3,  such as p3 is the permutation equivalent to 
+   consecutively applying  p1 after p2 ( right to left).
+   p1,p2 are defined in 'permutation' notation
+   examples:
+   (1 2 3), (3 2 1)           ->  (3 2 1) "
+  ([p] p)
+  ([p1 p2](seq (map #(nth p1 (dec %)) p2)))
+  ([p1 p2 & more](reduce dot (dot p1 p2) (reverse more))))
+
+
+(defn ccl-to-pmtn [c]
+  "convert cycle to permutation
+   i.e. a group Sn element from cycle to 
    permutation notation
    e.g. for G = S3 cycles -> permutations we have:
    '((1 2)(3))='((2 1)(3))='((3)(2 1))..   -> (2 1 3)
@@ -51,24 +66,27 @@
    '((3 2 1))='((1 3 2))='((2 1 3))        -> (3 1 2)
    '((1)(2)(3))='((3)(2)(1))..             -> (1 2 3)
    Note, cycle is evaluated from left to right  "
-  (vals 
-   (into 
-    (sorted-map)
-     (apply 
-       merge
-        (map single-cycle-to-permutation-helper c)))))
-  
+  ( ->> (map single-cycle-to-permutation-helper c)
+        (apply merge)
+        (into (sorted-map))
+        (vals)))
 
 ;;;some tests
-(cycle-to-permutation '((1 2 3 4 5 6 7)))
-(cycle-to-permutation '((1)))
-(cycle-to-permutation '((2 3)))
-(cycle-to-permutation '((1 3)(2)))
-(cycle-to-permutation '((1)(3)(2)))
-(cycle-to-permutation '((3 2 1)))
+(ccl-to-pmtn '((1 2 3 4 5 6 7)))
+(ccl-to-pmtn '((1)))
+(ccl-to-pmtn '((2 1)))
+(ccl-to-pmtn '((1 3)(2)))
+(ccl-to-pmtn '((1)(3)(2)))
+(ccl-to-pmtn '((2 3 1)))
 
 
-(defn muliply-cycles-to-permutation[c1 c2]
+;;;convert a permutation to cycle notation
+(defn pmtn-to-ccl[permutation]
+  permutation)
+;;;TODO
+
+
+(defn dot-cycles
   "Symmetric group * operation, i.e. multiplication of two permutations
    defined as c1*c2 = p3,  such as p3 is the permutation equivalent to applying 
    consecutively permutaion c1 after c2 ( right to left).
@@ -78,37 +96,22 @@
    (1 2)(3), (1 2 3)          ->  (1 3 2)
    (1 2 3),(1 2)(3)           ->  (3 2 1)
    (1 3)(2),(1 3)(2)          ->  (1 2 3)
-   (1 2 3)(1 2 3)             ->  (3 1 2)  
-   "
-  (let[a (cycle-to-permutation c1)
-       b (cycle-to-permutation c2)]
-    (map #(nth a (dec %)) b)))
+   (1 2 3)(1 2 3)             ->  (3 1 2)"
+  ([c] c)
+  ([c1 c2]
+   (let [a (ccl-to-pmtn c1)
+         b (ccl-to-pmtn c2)]
+     (pmtn-to-ccl (dot a b))))
+  ([c1 c2 & more]
+   (pmtn-to-ccl (reduce dot-cycles (dot-cycles c1 c2) (reverse more)))))
+
 
 ;;;some tests
-(muliply-cycles-to-permutation '((1 2 3)) '((1 2 3)))
-(muliply-cycles-to-permutation '((1 2)(3)) '((1)(2 3)))
-(muliply-cycles-to-permutation '((1 2)(3)) '((1 2 3)))
-(muliply-cycles-to-permutation '((1 2 3)) '((1 2)(3)))
-(muliply-cycles-to-permutation '((1 3)(2)) '((1 3)(2)))
-
-
-(defn dot
-  "Symmetric group operation *, i.e. multiplication 
-   of two or more permutations
-   defined as p1*p2 = p3,  such as p3 is the permutation equivalent to 
-   consecutively applying  p1 after p2 ( right to left).
-   p1,p2 are defined in 'permutation' notation
-   examples:
-   (1 2 3), (3 2 1)           ->  (3 2 1)
-   "([p] p)
-    ([p1 p2] (seq
-              (map #(nth p1 (dec %)) p2)))
-    ([p1 p2 & more]
-     (reduce  dot  (dot p1 p2) (reverse more))))
-
-
-
-(dot '( 1 2 3) '(3 2 1))
+(dot-cycles '((1 2 3)) '((1 2 3)))
+(dot-cycles '((1 2)(3)) '((1)(2 3)))
+(dot-cycles '((1 2)(3)) '((1 2 3)))
+(dot-cycles '((1 2 3)) '((1 2)(3)))
+(dot-cycles '((1 3)(2)) '((1 3)(2)))
 
 
 ;;;for a P calculate R = P^(-1)
@@ -116,18 +119,18 @@
 ;;; e.g. (2 1 3) -> (2 1 3)
 ;;;      (3 2 1) -> (3 2 1)
 ;;;      (3 1 2) -> (2 3 1)
-(defn get-inverted-permutation[p]
+(defn invert[p]
   (->> (seq p)
        (zipmap (range 1 (inc (count p))))
        (map-invert)
        (into (sorted-map))
        (vals)))
   
-(get-inverted-permutation '(3 1 2 ))
-(get-inverted-permutation '(3 2 1))
+(invert '(3 1 2 ))
+(invert '(3 2 1))
 
 
-(get-inverted-permutation '(2 3 1))
+(invert '(2 3 1))
 
 (dot '(2 3 1) '(2 3 1) '(3 1 2))
 (dot '(2 3 1) '(2 3 1))
