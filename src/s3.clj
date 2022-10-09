@@ -20,7 +20,7 @@
    ;;; print group multiplication table
   (prnt/multiplication-table-print-to-file 
    s3members
-   p/multiply-permutations
+   p/dot
    "output/s3.txt"
    true)
    
