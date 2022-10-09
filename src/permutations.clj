@@ -92,19 +92,23 @@
 (muliply-cycles-to-permutation '((1 3)(2)) '((1 3)(2)))
 
 
-(defn multiply-permutations [p1 p2]
-  "Symmetric group operation *, i.e. multiplication of two permutations
+(defn dot
+  "Symmetric group operation *, i.e. multiplication 
+   of two or more permutations
    defined as p1*p2 = p3,  such as p3 is the permutation equivalent to 
    consecutively applying  p1 after p2 ( right to left).
    p1,p2 are defined in 'permutation' notation
    examples:
    (1 2 3), (3 2 1)           ->  (3 2 1)
-   "
-    (seq
-     (map #(nth p1 (dec %)) p2)))
+   "([p] p)
+    ([p1 p2] (seq
+              (map #(nth p1 (dec %)) p2)))
+    ([p1 p2 & more]
+     (reduce  dot  (dot p1 p2) (reverse more))))
 
 
-(multiply-permutations '( 1 2 3) '(3 2 1))
+
+(dot '( 1 2 3) '(3 2 1))
 
 
 ;;;for a P calculate R = P^(-1)
@@ -119,7 +123,12 @@
        (into (sorted-map))
        (vals)))
   
-
 (get-inverted-permutation '(3 1 2 ))
 (get-inverted-permutation '(3 2 1))
 
+
+(get-inverted-permutation '(2 3 1))
+
+(dot '(2 3 1) '(2 3 1) '(3 1 2))
+(dot '(2 3 1) '(2 3 1))
+(dot [1 2 3] [1 2 3] [2 3 1])
