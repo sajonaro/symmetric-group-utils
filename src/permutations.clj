@@ -54,6 +54,11 @@
   ([p1 p2 & more](reduce dot (dot p1 p2) (reverse more))))
 
 
+(dot '(2 3 1) '(2 3 1) '(3 1 2))
+(dot '(2 3 1) '(2 3 1))
+(dot [1 2 3] [1 2 3] [2 3 1])
+
+
 (defn ccl-to-pmtn [c]
   "convert cycle to permutation
    i.e. a group Sn element from cycle to 
@@ -128,10 +133,4 @@
   
 (invert '(3 1 2 ))
 (invert '(3 2 1))
-
-
 (invert '(2 3 1))
-
-(dot '(2 3 1) '(2 3 1) '(3 1 2))
-(dot '(2 3 1) '(2 3 1))
-(dot [1 2 3] [1 2 3] [2 3 1])
