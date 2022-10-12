@@ -134,3 +134,38 @@
 (invert '(3 1 2 ))
 (invert '(3 2 1))
 (invert '(2 3 1))
+
+;;; convert Sn element 
+;;; written in form of a cycle - ccl 
+;;; to 'defining representaion'
+;;; i.e. a matrix N x N  with 
+;;; x[i,j] = 1 iff ccl[j] = i, 0 otherwise
+;;; e.g (1 2)(3) -> [[0 1 0]
+;;;                  [1 0 0]
+;;;                  [0 0 1]] 
+(defn ccl-to-matrix[ccl]
+  (let[prm (ccl-to-pmtn ccl) n (count prm)]
+    (loop[elements prm res []]
+     (if (zero? (count elements))
+       res
+         (recur
+          (rest elements)
+          (into res [(assoc (vec (repeat n 0)) (dec (first elements)) 1)]))))))
+
+;;;helper functin to pretty-print 
+;;;a matrix
+(defn print-matrix[mtrx]
+  (do
+    (print "[")
+    (doseq[el (butlast mtrx)]
+     (do
+       (print el)
+       (println))
+       (print " ")
+     )
+    (print (last mtrx))
+    (print "]")
+))
+
+;;;some tests
+(print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
