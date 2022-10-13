@@ -135,6 +135,25 @@
 (invert '(3 2 1))
 (invert '(2 3 1))
 
+
+;;; convert element of Sn 
+;;; written in form of a permutation 
+;;; to 'defining representaion'
+;;; i.e. a matrix N x N  with 
+;;; x[i,j] = 1 iff ccl[j] = i, 0 otherwise
+;;; e.g  (2 1 3) -> [[0 1 0]
+;;;                  [1 0 0]
+;;;                  [0 0 1]] 
+(defn pmtn-to-matrix [pmtn]
+  (let [ n (count pmtn)]
+    (loop [elements pmtn res []]
+      (if (zero? (count elements))
+        res
+        (recur
+         (rest elements)
+         (into res [(assoc (vec (repeat n 0)) (dec (first elements)) 1)]))))))
+
+
 ;;; convert Sn element 
 ;;; written in form of a cycle - ccl 
 ;;; to 'defining representaion'
@@ -143,14 +162,10 @@
 ;;; e.g (1 2)(3) -> [[0 1 0]
 ;;;                  [1 0 0]
 ;;;                  [0 0 1]] 
-(defn ccl-to-matrix[ccl]
-  (let[prm (ccl-to-pmtn ccl) n (count prm)]
-    (loop[elements prm res []]
-     (if (zero? (count elements))
-       res
-         (recur
-          (rest elements)
-          (into res [(assoc (vec (repeat n 0)) (dec (first elements)) 1)]))))))
+(defn ccl-to-matrix [ccl]
+  (->> (ccl-to-pmtn ccl)
+       (pmtn-to-matrix)))
+
 
 ;;;helper functin to pretty-print 
 ;;;a matrix
@@ -169,3 +184,4 @@
 
 ;;;some tests
 (print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
+(pmtn-to-matrix [2 1 3])
