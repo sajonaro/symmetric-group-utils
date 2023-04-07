@@ -185,3 +185,17 @@
 ;;;some tests
 (print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
 (pmtn-to-matrix [2 1 3])
+
+
+
+
+;;; take Nth element of permutation group elements
+;;; sorted in lexicographic (incremental) order
+(defn take-nth-element [permutation-collection, N]
+  (nth
+   (gen-permutations permutation-collection)
+   (dec N)))
+
+;;; for example this should return '(1 0 2)
+(take-nth-element '(0 1 2) 3)  
+
