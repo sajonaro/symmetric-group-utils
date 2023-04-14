@@ -87,3 +87,12 @@
     (.write w (with-out-str (print-multiplication-table els func)))))
 
 
+(defn print-stuff-to-file [stuff filename]
+  ^{:doc "prints (str stuff) to filename
+          stuff - object 
+          filename - name of the file to write into"
+   :arglists '(stuff filename)
+   :added "1.0"
+   :static true}
+  (with-open [w (io/writer filename :append false)]
+    (.write w (str stuff))))

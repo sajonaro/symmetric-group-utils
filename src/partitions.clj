@@ -1,4 +1,6 @@
-(ns partitions)
+(ns partitions
+  (:require 
+    [printing :as prnt]))
 
 
 
@@ -70,7 +72,7 @@
   " a partition of a number N
     is a weakly decreasing sequence (i1>=i2>=..ik )  of numbers adding up to N
     e.g. patritions of 
-    1:                                                                                                                                  (1) 
+    1:(1)                                                                                                                                 (1) 
     2:(1,1)                                                                                                                             (2)
     3:(1,1,1)         (2,1)                                                                                                             (3)
     4:(1,1,1,1)       (2,1,1)(2,2)                       (3,1)                                                                          (4)
@@ -90,7 +92,7 @@
 
 ;;;some tests
 
-(gen-partitions 7)
+(gen-partitions 4)
 
 (fold-last '(4 4))
 
@@ -105,4 +107,3 @@
 (fold-last '(3))
 
 (fold-last '(2 2 2 1))
-
