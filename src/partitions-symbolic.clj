@@ -3,8 +3,6 @@
    [printing :as prnt]))
 
 
-
-
 ;;; purely technical function
 ;;; for input [(a b c) 0] -> (ab c)
 (defn- pack-up-nth [coll n]
@@ -17,7 +15,7 @@
    [(#(str %1 %2) (first coll) (nth coll n))]
    (take-last (- (count coll) (inc n)) coll)))
 
-
+;;;tests
 (pack-up-nth (pack-up-nth (pack-up-nth [0 4 1 2 3 4] 2) 2) 1)
 (pack-up-nth [0 4 1 2 3 4] 4)
 
@@ -33,38 +31,37 @@
     '(B B B W) -> (B,B,B,W) (BB,B,W) (B,B,BW) (B ,BBW) (BBB,W) (BB,BW) (BBBW) 
     '(A B)     -> (A,B) (AB)
     '(A B C)   -> (A,B,C) (AB,C)  (AC,B) (A,BC) (ABC) ")
-(defn gen-partitions-from-elements
-  ([elements-coll]
-   (let [n   (dec (count elements-coll))
-         col (gen-partitions-from-elements elements-coll n)
-         filtered-col (filter #(not (= (count %) 1)) col)]
+(defn gen-parts-symb
+  ([col _ _]
+   (let [n (count col) , tmp (gen-parts-symb col n)]
      (cond
-       (== 1 (count elements-coll))
-       elements-coll
+       (= n 1) col
+       (= n 2) [col]
        :else
-       (concat (map gen-partitions-from-elements
-                    filtered-col)
-               col))))
-  ([elements-coll partitions#]
-   (loop [res [] i 1]
-     (cond (== partitions# (dec i))
-           res
-           :else
-           (recur (conj  res (pack-up-nth elements-coll i))
-                  (inc i))))))
-
+       (conj (mapcat #(gen-parts-symb % 0 0) tmp) col))))
+  ([col n]
+   (loop [counter 1
+          results []]
+     (if (< counter n)
+       (recur (inc counter)
+              (conj results (pack-up-nth col counter)))
+       results)))
+  ([col]
+   (if (= (count col) 1)
+     col 
+    (conj (gen-parts-symb col 0 0) (conj () (apply str col))))))
 
 
 
 (comment "Some tests")
-(def stuff (seq (gen-partitions-from-elements '(a  b c d))))
+(def stuff (seq (gen-parts-symb '(a  b c d))))
 (prnt/print-stuff-to-file stuff "test.txt")
 
-(gen-partitions-from-elements '(a  b c d) 3)
-(gen-partitions-from-elements '(a  b c d))
-(gen-partitions-from-elements '(a  b c))
-(gen-partitions-from-elements '(a  b))
-(gen-partitions-from-elements '(a))
+(gen-parts-symb '(a  b c d e))
+(gen-parts-symb '(a  b c d))
+(gen-parts-symb '(a  b c))
+(gen-parts-symb '(a  b))
+(gen-parts-symb '(a))
 
 
 
@@ -72,31 +69,7 @@
 ;;; having three black objects B and one white object W 
 ;;; they can be grouped in 7 ways like this:
 ;;; (BBBW)	(B,BBW)	(B,B,BW)	(B,B,B,W) 	(B,BB,W)	(BBB,W)	(BB,BW)
-(gen-partitions-from-elements '(B B B W))
-
-
-(defn gen-partitions-any
-  ([elements-coll]
-   (let [n   (dec (count elements-coll))
-         col (gen-partitions-any elements-coll n)
-         filtered-col (filter #(not (= (count %) 1)) col)]
-     (cond
-       (= 1 (count elements-coll))
-       elements-coll
-       :else
-       (concat col (map gen-partitions-any (rest  filtered-col))))))
-  ([elements-coll partitions#]
-   (loop [res [] i 1]
-     (cond (= partitions# (dec i))
-           res
-           :else
-           (recur (cons  (pack-up-nth elements-coll i) res)
-                  (inc i))))))
-
-
-(gen-partitions-any '(a b c))
-(gen-partitions-any '(B B B W))
-(gen-partitions-from-elements '(B B B W))
+(gen-parts-symb '(B B B W))
 
 
 ;;;combination of conj and concat
@@ -107,56 +80,5 @@
     (conjat (conj col_a (first col_b)) (rest col_b))
     col_a))
 
-
-
-
-
-(defn build-result-2
-  ([col]
-   (let [n (count col) , tmp (build-result-2 col n)]
-     (cond
-       (= n 1) col
-       (= n 2) col
-       :else
-       (conjat (map build-result-2 tmp) [col]))))
-  ([col n]
-   (loop [counter 1
-          results []]
-     (if (< counter n)
-       (recur (inc counter)
-              (conj results (pack-up-nth col counter)))
-       results)))
-  ([col _  _]
-   (apply str col)))
-    ;;;(conj (reduce #(conj %1 (first %2)) [] (rest (build-result-2 col 0 0))) 
-    ;;;      [(apply str col)])))
-
-
-
-
+;;;example
 (conjat ['(1)] '('(3) '(4)))
-(build-result-2 '(1 2 3 4))
-(build-result-2 '(1 2 3 4 5))
-(gen-partitions-any '(1 2 3) 2)
-
-(defn gen-parts-any
-  ([elements-coll]
-   (let [n   (dec (count elements-coll))
-         col (gen-parts-any elements-coll n)
-         filtered-col (filter #(not (= (count %) 1)) col)
-         res []]
-     (cond
-       (= 1 (count elements-coll))
-       elements-coll
-       :else
-       (concat col (map gen-parts-any (rest filtered-col))))))
-  ([elements-coll partitions#]
-   (loop [res [] i 1]
-     (cond (= partitions# (dec i))
-           res
-           :else
-           (recur (cons  (pack-up-nth elements-coll i) res)
-                  (inc i))))))
-
-
-(gen-parts-any '(B B B W))
