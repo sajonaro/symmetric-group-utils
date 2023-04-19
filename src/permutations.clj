@@ -199,3 +199,21 @@
 ;;; for example this should return '(1 0 2)
 (take-nth-element '(0 1 2) 3)  
 
+(defn apply-default-cycle[lst]
+  " generate all sequneces from default cycle
+    assuming elements are in 'cyclic' order e.g.
+   '(a b c) ->  ((a b c) (c a b) (b c a))
+   "
+  (loop[ res []
+         tmp lst,
+         i (count lst)]
+   (if (> i 0 )
+     (recur 
+      (conj res tmp)
+      (cons (last tmp) (take (dec (count tmp)) tmp))
+      (dec i))
+     res)))
+
+;;;test
+(apply-default-cycle '(a b c d))
+(apply-default-cycle '(1 2 3))
