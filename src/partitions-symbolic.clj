@@ -4,7 +4,6 @@
    [permutations :as perm]
    [basic]))
 
-
 ;;; purely technical function
 ;;; for input [(a b c) 0] -> (ab c)
 (defn- pack-up-nth [coll n]
@@ -20,7 +19,6 @@
 ;;;tests
 (pack-up-nth (pack-up-nth (pack-up-nth [0 4 1 2 3 4] 2) 2) 1)
 (pack-up-nth [0 4 1 2 3 4] 4)
-
 
 ;;;relaxed version of gen-parts-symb-unique
 ;;;in that is for it (a b) not = (b a)
@@ -49,20 +47,23 @@
     (mapcat #(gen-parts-symb % n) lst ))))
 
 
+(defn transform-element [element]
+  (cond (string? element )
+        (apply str (sort (str element (count element))))
+   :else
+        (str element)))
+
 ;;; function providing a (unique) KEY  
 ;;; identifying a grouping 
-(defn grouping-selector [grouping]
-  (sort (apply concat
-               (map #(sort (str %))
-                    (cons (count grouping) grouping)))))
+(defn unique-selector [grouping]
+  (apply str (sort (map transform-element
+                        grouping))))
  
-;; ((apply concat (map #(sort (str %)) '("ac" "b" "bca")))
-
-(cons (count '(a b "ac"  "bca" a)) '(a b "ac"  "bca" a))
-(grouping-selector '(c "ab"))
-(map #(sort (str %)) '(a b "ac"  "bca" a))
-(zipmap '(a b) '(1 1))
-
+;;;some tests
+(unique-selector '(c "ab"))
+(unique-selector '(a "bc"))
+(unique-selector '("cb" a))
+(unique-selector '( "bc" a a d))
 
 (comment
   " Generate all possible ways to break (partition) provided 
@@ -83,29 +84,16 @@
 
 (gen-parts-symb '(a  b c d e))
 (gen-parts-symb '(a  b c d) 0 0 0)
-
-;; (ab,ac)(ab, bc)(ca, cb)
+ 
 (gen-parts-symb '(a  b c) 0 0 0)
 (gen-parts-symb '(a  b c))
-(gen-parts-symb-unique '(a b c) grouping-selector)
+(gen-parts-symb-unique '(a b c) unique-selector)
+
 (gen-parts-symb '(a))
 (perm/apply-default-cycle '(1 2 3))
-
 
 ;;; example: 
 ;;; having three black objects B and one white object W 
 ;;; they can be grouped in 7 ways like this:
 ;;; (BBBW)	(B,BBW)	(B,B,BW)	(B,B,B,W) 	(B,BB,W)	(BBB,W)	(BB,BW)
-(gen-parts-symb '(B B B W))
-
-
-;;;combination of conj and concat
-;;; i.e. adds flattaned by one level 
-;;;second col-b into col-a
-(defn conjat [col_a col_b]
-  (if (seq col_b)
-    (conjat (conj col_a (first col_b)) (rest col_b))
-    col_a))
-
-;;;example
-(conjat ['(1)] '('(3) '(4)))
+(gen-parts-symb-unique '(B B B W) unique-selector)
