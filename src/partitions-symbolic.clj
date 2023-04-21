@@ -97,3 +97,4 @@
 ;;; they can be grouped in 7 ways like this:
 ;;; (BBBW)	(B,BBW)	(B,B,BW)	(B,B,B,W) 	(B,BB,W)	(BBB,W)	(BB,BW)
 (gen-parts-symb-unique '(B B B W) unique-selector)
+(gen-parts-symb-unique '(0 0 0 1) unique-selector)
