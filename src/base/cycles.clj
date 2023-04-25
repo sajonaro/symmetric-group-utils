@@ -1,6 +1,6 @@
-(ns cycles
+(ns base.cycles
   (:require
-   [partitions :as ptns]))
+   [base.partitions :as ptns]))
 
 
 (defn enhance-partition [partition]
@@ -76,3 +76,4 @@
 (gen-all-cycles-by-part '(3 1))
 (gen-all-cycles-by-part '(3 1 1))
 (rotate-cycle-right '(1 ))
+

@@ -1,6 +1,6 @@
-(ns s3
-  (:require [permutations :as p]
-            [printing :as prnt]
+(ns algebra.s3
+  (:require [base.permutations :as p]
+            [base.printing :as prnt]
             [clojure.pprint :as pp]
             [clojure.java.io :as io]))
 

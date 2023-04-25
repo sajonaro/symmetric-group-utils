@@ -1,4 +1,4 @@
-(ns basic)
+(ns base.common)
 
 ;;contains general purpose utility functions
 (defn distinct-by
@@ -23,7 +23,6 @@
                   (rf result input)))))))))
   ([f xs]
    (sequence (distinct-by f) xs)))
-
 
 
 ;;;combination of conj and concat

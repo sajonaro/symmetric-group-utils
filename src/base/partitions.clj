@@ -1,6 +1,6 @@
-(ns partitions
+(ns base.partitions
   (:require 
-    [printing :as prnt]))
+    [base.printing :as prnt]))
 
 
 

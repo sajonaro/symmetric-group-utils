@@ -1,8 +1,9 @@
-(ns sets)
+(ns base.sets)
 
 
-(defn has? [col el]
-  "True if `col` contains `el`, false otherwise"
+(defn has? 
+  "True if `col` contains `el`, false otherwise."
+  [col el]
   (loop[tmp col]
    (if (and (seq tmp) (not= (first tmp) el))
      (recur (rest tmp))

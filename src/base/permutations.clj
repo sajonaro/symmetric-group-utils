@@ -1,6 +1,7 @@
-(ns permutations
+(ns base.permutations
   (:require [clojure.set :refer :all ]
-            [permutations :as p]))
+            [base.permutations :as p]
+            [base.sets :as sets]))
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
@@ -59,7 +60,7 @@
 (dot [1 2 3] [1 2 3] [2 3 1])
 
 
-(defn ccl-to-pmtn [c]
+(defn ccl-to-pmtn [ccl]
   "convert cycle to permutation
    i.e. a group Sn element from cycle to 
    permutation notation
@@ -71,7 +72,7 @@
    '((3 2 1))='((1 3 2))='((2 1 3))        -> (3 1 2)
    '((1)(2)(3))='((3)(2)(1))..             -> (1 2 3)
    Note, cycle is evaluated from left to right  "
-  ( ->> (map single-cycle-to-permutation-helper c)
+  ( ->> (map single-cycle-to-permutation-helper ccl)
         (apply merge)
         (into (sorted-map))
         (vals)))
@@ -85,10 +86,77 @@
 (ccl-to-pmtn '((2 3 1)))
 
 
-;;;convert a permutation to cycle notation
-(defn pmtn-to-ccl[permutation]
-  permutation)
-;;;TODO
+(defn dot-permutation-per-number[perm n]
+  "Apply the permutation to individual number"
+  (nth perm (dec n)))
+
+(defn dot-cycle-per-number [ccl n]
+  "Apply the permutation `ccl` to individual number `n`"
+  (dot-permutation-per-number (ccl-to-pmtn ccl) n))
+
+;;;tests
+(dot-permutation-per-number '(2 3 1) 3)
+(dot-cycle-per-number '((2 3 1)) 3)
+
+(defn insert-in-tuple-n-th
+  "return col transformed in following way:
+   its `n`-th tuple gets el added into it
+   e.g '( () () ()), 2 , 'x --> () (x) ())"
+  [col n el]
+  (concat
+   (take (dec n) col)
+   (conj '() (concat (nth col (dec n)) (conj '() el)))
+   (take-last (- (count col) n) col)))
+
+
+(defn has-in-tuple-number
+  "Return index with tuple inside `col` containing `n`
+   `col` is a cycle, i.e. a list of lists
+   e.g. inputs and results: 
+   '((1 2) (3)), 2    ->  1
+   '((1)(2)(3)), 4    -> -1"
+  [col n]
+  (loop [i 1 tmp col]
+    (if (and (seq tmp)
+             (not (sets/has? (first tmp) n)))
+      (recur (inc i) (rest tmp))
+      (if (seq tmp)
+        i
+        -1))))
+;;test
+(has-in-tuple-number '(()()(1)) 1)
+
+#dbg
+(defn perm-2-ccl-rf-fact
+  "Reducing function factory."
+  [permutation]
+    (fn[acc curr]
+     (let [p (dot-permutation-per-number permutation curr)  
+           tpl (has-in-tuple-number acc p)]
+       (cond (= p curr) 
+               (conj acc (conj '() curr)) 
+             (not= tpl -1 ) ;;;add n into tpl'th cycle
+               (insert-in-tuple-n-th acc tpl curr)
+             (= tpl -1)
+               (conj acc (conj '() curr))))))
+
+(defn permutation-to-ccl
+  "Convert a `permutation` to cycle notation
+   e.g:
+   '(3 2 1) -> '((1 3)(2))
+   '(3 1 2) -> '((1 2 3))
+   '(3 2 1 4) -> '((1 3)(2)(4))"
+  ([permutation]
+   (reduce (perm-2-ccl-rf-fact permutation) '()
+           (range 1 (inc (count permutation))))))
+
+;;;test
+(permutation-to-ccl '(3 2 1))
+(permutation-to-ccl '(3 1 2))
+(permutation-to-ccl '(3 1 2 4))
+
+
+
 
 
 (defn dot-cycles
@@ -106,10 +174,9 @@
   ([c1 c2]
    (let [a (ccl-to-pmtn c1)
          b (ccl-to-pmtn c2)]
-     (pmtn-to-ccl (dot a b))))
+     (permutation-to-ccl (dot a b))))
   ([c1 c2 & more]
-   (pmtn-to-ccl (reduce dot-cycles (dot-cycles c1 c2) (reverse more)))))
-
+   (permutation-to-ccl (reduce dot-cycles (dot-cycles c1 c2) (reverse more)))))
 
 ;;;some tests
 (dot-cycles '((1 2 3)) '((1 2 3)))
@@ -186,12 +253,9 @@
 (print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
 (pmtn-to-matrix [2 1 3])
 
-
-
-
-;;; take Nth element of permutation group elements
-;;; sorted in lexicographic (incremental) order
 (defn take-nth-element [permutation-collection, N]
+  "Take Nth element of permutation group elements
+   sorted in lexicographic (incremental) order. "
   (nth
    (gen-permutations permutation-collection)
    (dec N)))

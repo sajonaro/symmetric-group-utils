@@ -1,8 +1,8 @@
-(ns partitions-symbolic
+(ns base.partitions-symbolic
   (:require
-   [printing :as prnt]
-   [permutations :as perm]
-   [basic]))
+   [base.printing :as prnt]
+   [base.permutations :as perm]
+   [base.common :as cm] ))
 
 ;;; purely technical function
 ;;; for input [(a b c) 0] -> (ab c)
@@ -76,7 +76,7 @@
     '(A B)     -> (A,B) (AB)
     '(A B C)   -> (A,B,C) (AB,C)  (AC,B) (A,BC) (ABC) ")
 (defn gen-parts-symb-unique[col, selector-fn]
-  (basic/distinct-by selector-fn (gen-parts-symb col)))
+  (cm/distinct-by selector-fn (gen-parts-symb col)))
 
 (comment "Some tests")
 (def stuff (seq (gen-parts-symb '(a  b c d))))
