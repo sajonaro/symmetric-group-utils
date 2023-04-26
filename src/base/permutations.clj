@@ -1,7 +1,8 @@
 (ns base.permutations
-  (:require [clojure.set :refer :all ]
-            [base.permutations :as p]
-            [base.sets :as sets]))
+  (:require [base.permutations :as p]
+            [base.sets :as sets]
+            [clojure.set :refer :all ]
+            [clojure.test :refer [deftest is testing]]))
 
 (defn gen-permutations [coll]
   "generate a list of all possible permutations of elements in collection
@@ -125,37 +126,39 @@
         -1))))
 ;;test
 (has-in-tuple-number '(()()(1)) 1)
+(has-in-tuple-number '() 3)
 
-#dbg
-(defn perm-2-ccl-rf-fact
-  "Reducing function factory."
-  [permutation]
-    (fn[acc curr]
-     (let [p (dot-permutation-per-number permutation curr)  
-           tpl (has-in-tuple-number acc p)]
-       (cond (= p curr) 
-               (conj acc (conj '() curr)) 
-             (not= tpl -1 ) ;;;add n into tpl'th cycle
-               (insert-in-tuple-n-th acc tpl curr)
-             (= tpl -1)
-               (conj acc (conj '() curr))))))
 
 (defn permutation-to-ccl
   "Convert a `permutation` to cycle notation
    e.g:
-   '(3 2 1) -> '((1 3)(2))
-   '(3 1 2) -> '((1 2 3))
-   '(3 2 1 4) -> '((1 3)(2)(4))"
+   '(3 2 1)       - > '((1 3)(2))
+   '(3 1 2)       - > '((3 2 1))
+   '(3 2 1 4)     - > '((1 3)(2)(4))
+   '(2 3 4 1 5 7 6)   - > '((1 2 3 4 )(5)(6 7))"
   ([permutation]
-   (reduce (perm-2-ccl-rf-fact permutation) '()
-           (range 1 (inc (count permutation))))))
+   (reduce (rf-factory permutation) '()
+           permutation)))
+
+(defn rf-factory
+  "Reducing function factory."
+  [permutation]
+  (fn [acc curr]
+    (if (= -1 (has-in-tuple-number acc curr))
+      (loop [res (conj '() curr) nxt (dot-permutation-per-number permutation curr)]
+        (if (not= nxt curr)
+          (recur (concat res (conj '() nxt))
+                 (dot-permutation-per-number permutation nxt))
+          (conj acc res)))
+      acc)))
 
 ;;;test
 (permutation-to-ccl '(3 2 1))
-(permutation-to-ccl '(3 1 2))
-(permutation-to-ccl '(3 1 2 4))
-
-
+(permutation-to-ccl '(3 1 2))        
+(permutation-to-ccl '(3 2 1 4))
+((deftest conversion-test
+      (testing "Context of the test assertions"
+        (is (= '(2 3 4 1 5 7 6) (ccl-to-pmtn (permutation-to-ccl '(2 3 4 1 5 7 6))))))) )
 
 
 
