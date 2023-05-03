@@ -4,9 +4,10 @@
             [clojure.set :refer :all ]
             [clojure.test :refer [deftest is testing]]))
 
-(defn gen-permutations [coll]
+(defn gen-permutations 
   "generate a list of all possible permutations of elements in collection
    for exaple, (1 2 3) -> ((1 2 3)(3 2 1)(1 3 2)(2 1 3) (2 3 1)(3 1 2))"
+  [coll]
   (lazy-seq
    (if (seq (rest coll))
      (apply concat (for [x coll]
@@ -256,9 +257,10 @@
 (print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
 (pmtn-to-matrix [2 1 3])
 
-(defn take-nth-element [permutation-collection, N]
+(defn take-nth-element 
   "Take Nth element of permutation group elements
    sorted in lexicographic (incremental) order. "
+  [permutation-collection, N]
   (nth
    (gen-permutations permutation-collection)
    (dec N)))
