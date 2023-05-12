@@ -10,7 +10,7 @@
   [g1 & gn]
   (apply = (map perm/ccl-to-pmtn (cons g1 gn))))
 
-(are-equal-cycles '((1 2)(3)) '((3)(1)(2)))
+;;;(are-equal-cycles '((1 2)(3)) '((3)(1)(2)))
 
 (defn are-equal-permutations
   "True iff arguments are equivalent Sn group elements,
@@ -20,7 +20,7 @@
   [g1 & gn]
   (apply =  (cons g1 gn)))
 
-(are-equal-permutations '(1 2 3) '(1 2 3) '(1 3 2))
+;;;(are-equal-permutations '(1 2 3) '(1 2 3) '(1 3 2))
 
 (defn get-all-group-members
   "get the list of all group members in alphabetic order of Sn, `n` is provided"
@@ -49,7 +49,7 @@
        (recur (rest c) fst))))
 
 ;;;TODO hangs!!
-(pick-next-group-member '(1 2 3))
+;;;(pick-next-group-member '(1 2 3))
 
 (defn get-conjugacy-classes 
   "Break down  all elements of the group S(N = order)into conjugacy classes

@@ -1,22 +1,19 @@
 (ns build
-  (:require [clojure.tools.build.api :as b]))
+  (:refer-clojure :exclude [test])
+  (:require [org.corfield.build :as bb]))
 
-(def lib 'com.github.sajonaro/symmetric-group-utils)
-(def version (format "0.0.%s" (b/git-count-revs nil)))
-(def class-dir "target/classes")
-(def basis (b/create-basis {:project "deps.edn"}))
-(def jar-file (format "target/%s-%s.jar" (name lib) version))
+(def lib 'net.clojars.sajonaro/grutils)
+(def version "0.1.0-SNAPSHOT")
+(def main 'algebra.ep)
 
-(defn clean [_]
-  (b/delete {:path "target"}))
+(defn test "Run the tests." [opts]
+  (bb/run-tests opts))
 
-(defn jar [_]
-  (b/write-pom {:class-dir class-dir
-                :lib lib
-                :version version
-                :basis basis
-                :src-dirs ["src"]})
-  (b/copy-dir {:src-dirs ["src" "resources"]
-               :target-dir class-dir})
-  (b/jar {:class-dir class-dir
-          :jar-file jar-file}))
+(defn ci 
+  "Run the CI pipeline of tests (and build the uberjar)."
+  [opts]
+  (-> opts
+      (assoc :lib lib :version version :main main)
+      (bb/run-tests)
+      (bb/clean)
+      (bb/uber)))

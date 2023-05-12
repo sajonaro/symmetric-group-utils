@@ -6,11 +6,12 @@
 
 ;;; purely technical function
 ;;; for input [(a b c) 0] -> (ab c)
-(defn- pack-up-nth [coll n]
-  " input -> result:
+(defn- pack-up-nth
+    " input -> result:
     ['(a b c) 0] -> '(ab c)
     ['(a b c d) 2] -> '(b ac)
    "
+  [coll n]
   (concat
    (take (dec n) (rest coll))
    [(#(str %1 %2) (first coll) (nth coll n))]
@@ -78,9 +79,10 @@
 (defn gen-parts-symb-unique[col, selector-fn]
   (cm/distinct-by selector-fn (gen-parts-symb col)))
 
-(comment "Some tests")
-(def stuff (seq (gen-parts-symb '(a  b c d))))
-(prnt/print-stuff-to-file stuff "test.txt")
+(comment "Some tests"
+         (def stuff (seq (gen-parts-symb '(a  b c d))))
+(prnt/print-stuff-to-file stuff "test.txt"))
+
 
 (gen-parts-symb '(a  b c d e))
 (gen-parts-symb '(a  b c d) 0 0 0)

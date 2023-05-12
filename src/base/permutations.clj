@@ -1,8 +1,6 @@
 (ns base.permutations
-  (:require [base.permutations :as p]
-            [base.sets :as sets]
-            [clojure.set :refer :all ]
-            [clojure.test :refer [deftest is testing]]))
+  (:require [base.sets :as sets]
+            [clojure.set :refer [map-invert]]))
 
 (defn gen-permutations 
   "generate a list of all possible permutations of elements in collection
@@ -14,9 +12,6 @@
                      (map #(cons x %)
                           (gen-permutations (remove #{x} coll)))))
      [coll])))
-
-;;;some tests
-(count (gen-permutations '(1 2 3))) ;;should be = 6
 
 
 (defn single-cycle-to-permutation-helper [c]
@@ -57,10 +52,6 @@
   ([p1 p2 & more](reduce dot (dot p1 p2) (reverse more))))
 
 
-(dot '(2 3 1) '(2 3 1) '(3 1 2))
-(dot '(2 3 1) '(2 3 1))
-(dot [1 2 3] [1 2 3] [2 3 1])
-
 
 (defn ccl-to-pmtn [ccl]
   "convert cycle to permutation
@@ -79,26 +70,16 @@
         (into (sorted-map))
         (vals)))
 
-;;;some tests
-(ccl-to-pmtn '((1 2 3 4 5 6 7)))
-(ccl-to-pmtn '((1)))
-(ccl-to-pmtn '((2 1)))
-(ccl-to-pmtn '((1 3)(2)))
-(ccl-to-pmtn '((1)(3)(2)))
-(ccl-to-pmtn '((2 3 1)))
-
-
-(defn dot-permutation-per-number[perm n]
+(defn dot-permutation-per-number
   "Apply the permutation to individual number"
+  [perm n]
   (nth perm (dec n)))
 
-(defn dot-cycle-per-number [ccl n]
+(defn dot-cycle-per-number
   "Apply the permutation `ccl` to individual number `n`"
+  [ccl n]
   (dot-permutation-per-number (ccl-to-pmtn ccl) n))
 
-;;;tests
-(dot-permutation-per-number '(2 3 1) 3)
-(dot-cycle-per-number '((2 3 1)) 3)
 
 (defn insert-in-tuple-n-th
   "return col transformed in following way:
@@ -125,21 +106,7 @@
       (if (seq tmp)
         i
         -1))))
-;;test
-(has-in-tuple-number '(()()(1)) 1)
-(has-in-tuple-number '() 3)
 
-
-(defn permutation-to-ccl
-  "Convert a `permutation` to cycle notation
-   e.g:
-   '(3 2 1)       - > '((1 3)(2))
-   '(3 1 2)       - > '((3 2 1))
-   '(3 2 1 4)     - > '((1 3)(2)(4))
-   '(2 3 4 1 5 7 6)   - > '((1 2 3 4 )(5)(6 7))"
-  ([permutation]
-   (reduce (rf-factory permutation) '()
-           permutation)))
 
 (defn rf-factory
   "Reducing function factory."
@@ -153,14 +120,16 @@
           (conj acc res)))
       acc)))
 
-;;;test
-(permutation-to-ccl '(3 2 1))
-(permutation-to-ccl '(3 1 2))        
-(permutation-to-ccl '(3 2 1 4))
-((deftest conversion-test
-      (testing "Context of the test assertions"
-        (is (= '(2 3 4 1 5 7 6) (ccl-to-pmtn (permutation-to-ccl '(2 3 4 1 5 7 6))))))) )
-
+(defn permutation-to-ccl
+  "Convert a `permutation` to cycle notation
+   e.g:
+   '(3 2 1)       - > '((1 3)(2))
+   '(3 1 2)       - > '((3 2 1))
+   '(3 2 1 4)     - > '((1 3)(2)(4))
+   '(2 3 4 1 5 7 6)   - > '((1 2 3 4 )(5)(6 7))"
+  ([permutation]
+   (reduce (rf-factory permutation) '()
+           permutation)))
 
 
 (defn dot-cycles
@@ -182,14 +151,6 @@
   ([c1 c2 & more]
    (permutation-to-ccl (reduce dot-cycles (dot-cycles c1 c2) (reverse more)))))
 
-;;;some tests
-(dot-cycles '((1 2 3)) '((1 2 3)))
-(dot-cycles '((1 2)(3)) '((1)(2 3)))
-(dot-cycles '((1 2)(3)) '((1 2 3)))
-(dot-cycles '((1 2 3)) '((1 2)(3)))
-(dot-cycles '((1 3)(2)) '((1 3)(2)))
-
-
 ;;;for a P calculate R = P^(-1)
 ;;;(such that p*r = i = r*p)
 ;;; e.g. (2 1 3) -> (2 1 3)
@@ -202,10 +163,6 @@
        (into (sorted-map))
        (vals)))
   
-(invert '(3 1 2 ))
-(invert '(3 2 1))
-(invert '(2 3 1))
-
 
 ;;; convert element of Sn 
 ;;; written in form of a permutation 
@@ -238,9 +195,11 @@
        (pmtn-to-matrix)))
 
 
-;;;helper functin to pretty-print 
-;;;a matrix
-(defn print-matrix[mtrx]
+
+(defn print-matrix
+  "helper functin to pretty-print 
+   a matrix"
+  [mtrx]
   (do
     (print "[")
     (doseq[el (butlast mtrx)]
@@ -253,9 +212,6 @@
     (print "]")
 ))
 
-;;;some tests
-(print-matrix (ccl-to-matrix [[1 2] [3] [4]]))
-(pmtn-to-matrix [2 1 3])
 
 (defn take-nth-element 
   "Take Nth element of permutation group elements
@@ -265,14 +221,13 @@
    (gen-permutations permutation-collection)
    (dec N)))
 
-;;; for example this should return '(1 0 2)
-(take-nth-element '(0 1 2) 3)  
 
-(defn apply-default-cycle[lst]
+(defn apply-default-cycle
   " generate all sequneces from default cycle
     assuming elements are in 'cyclic' order e.g.
    '(a b c) ->  ((a b c) (c a b) (b c a))
    "
+  [lst]
   (loop[ res []
          tmp lst,
          i (count lst)]
@@ -282,7 +237,3 @@
       (cons (last tmp) (take (dec (count tmp)) tmp))
       (dec i))
      res)))
-
-;;;test
-(apply-default-cycle '(a b c d))
-(apply-default-cycle '(1 2 3))
