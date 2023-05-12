@@ -1,14 +1,30 @@
 #Build stage
 FROM clojure:temurin-17-alpine AS builder
 ENV CLOJURE_VERSION=1.11.1.1182
+RUN export PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin"
+RUN apk add --no-cache rlwrap
 RUN mkdir -p /build
 WORKDIR /build
 COPY deps.edn /build/
-RUN clojure -P -T:build
+RUN clojure -P -T:build ci
 COPY ./ /build
-RUN clojure -T:build uberjar
+RUN /bin/bash -c 'clojure -M:test' 
+RUN /bin/bash -c 'clojure -T:build ci' 
 
-#RUN stage
+
+#Inherit GraalVM image
+FROM ghcr.io/graalvm/jdk:ol8-java17-22.3.1 AS graal
+RUN mkdir -p /stuff
+WORKDIR /stuff
+COPY --from=builder /target/grutils.jar /stuff
+RUN native-image --report-unsupported-elements-at-runtime \
+             --initialize-at-build-time \
+             --no-fallback \
+             -jar *.jar \
+             -H:Name=./grutils-cli
+
+
+#final (prod/run) stage
 FROM eclipse-temurin:17-alpine
 
 #Labeling container for easier identification
@@ -29,7 +45,7 @@ USER grutils
 #copy uber from builder 
 RUN mkdir -p /service
 WORKDIR /service
-COPY --from=builder /target/grutils.jar /service/grutils.jar
+COPY --from=builder /stuff/grutils.jar /service/grutils.jar
 
 #dumb init ensures TERM  signals are sent to the Java process 
 #and all child processes are cleaned up on shutdown.
