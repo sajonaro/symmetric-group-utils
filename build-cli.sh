@@ -1,11 +1,15 @@
 #!/bin/bash 
 
 
-echo "step 1: test, uber"
+echo "step 0: run unit tests "
+clj -M:test
+
+
+echo "step 1: clean, generate uber jar"
 clj -T:build ci
 
 
-echo "step 2: Nativizing it with Graal-VM"
+echo "step 2: create native image of it with Graal-VM"
 
 #confguting Graal-vm
 export PATH="/home/rt/graalvm-ce-java17-22.3.1/bin:$PATH"
@@ -18,5 +22,11 @@ native-image --report-unsupported-elements-at-runtime \
              -jar ./target/*.jar \
              -H:Name=./grutils-cli
 
-echo "Success! Good to run ./grutils-cli"
+
+FILE=./grutils-cli
+if test -f "$FILE"; then
+    echo "Success! Good to run ./grutils-cli"
+fi
+
+
 
