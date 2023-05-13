@@ -3,8 +3,8 @@
 
 # Include Clojure code and config
 !deps.edn
-!Makefile
 !src/
 !tests/
 !test-data/
 !resources/
+*.clj
