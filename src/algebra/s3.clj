@@ -14,7 +14,7 @@
       (next (p/gen-permutations '(1 2 3))))))
 
   ;;;print group details into file
-  (pp/pprint s3members (io/writer "output/s3.txt"))
+  (pp/pprint s3members (io/writer "resources/output/s3.txt"))
   
 
    ;;; print group multiplication table
