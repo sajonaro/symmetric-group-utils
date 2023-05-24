@@ -209,8 +209,7 @@
        (print " ")
      )
     (print (last mtrx))
-    (print "]")
-))
+    (print "]")))
 
 
 (defn take-nth-element 
