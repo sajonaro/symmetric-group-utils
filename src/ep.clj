@@ -1,8 +1,8 @@
-(ns algebra.ep
+(ns ep
+  (:gen-class)
   (:require 
-   [algebra.cli-interface :as cli]
-   [cli-matic.core :refer [run-cmd]])
-  (:gen-class))
+   [interface.cli-interface :as cli]
+   [cli-matic.core :refer [run-cmd]]))
 
 
 (defn x 
@@ -22,14 +22,13 @@
                   :runs        cli/p2c}
                  
                  {:command     "c2m"
-                  :description "Convert a cycle into matrix form"
-                  :examples [ "c2m '(1 2)(3)' -->    [[0 1 0]
-                               [1 0 0]
-                               [0 0 1]]"]
-                  :opts        [{:as      "cycle"
-                                 :option  "c"
-                                 :type :edn}]
-                  :runs cli/c2m}]} )
+                  :description "Convert a cycle into matrix form 
+                                i.e get a matrix representation for a cycle"
+                  :examples [ "c2m '((1 2)(3))' -->
+                               [[0 1 0]
+                                [1 0 0]
+                                [0 0 1]]"]
+                  :runs cli/c2m }]} )
 
 (defn -main 
   [& args]

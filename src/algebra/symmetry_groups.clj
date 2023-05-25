@@ -1,5 +1,9 @@
 (ns algebra.symmetry-groups
-  (:require [base.permutations :as perm]))
+  (:require 
+   [base.permutations :as perm]
+   [clojure.pprint :as pp]
+   [base.printing :as prnt]
+   [clojure.java.io :as io]))
 
 (defn are-equal-cycles
   "True iff arguments are equivalent Sn group elements,
@@ -71,4 +75,21 @@
 (get-conjugacy-classes 3)
 
 
+ (def s3members
+   (merge
+     {:e '(1 2 3)} ;;; e*g=g*e, for any g in S3
+     (zipmap
+      '(g1 g2 g3 g4 g5)
+      (next (perm/gen-permutations '(1 2 3))))))
 
+;;;(def path "../../resources/output/s3.txt")
+
+  ;;;print group details into file
+;;;(pp/pprint s3members (io/writer path))
+
+;;; print group multiplication table
+;;; (prnt/multiplication-table-print-to-file
+;;; s3members;;
+;;; path
+;;; true)
+;;;

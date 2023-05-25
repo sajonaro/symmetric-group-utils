@@ -1,2 +1,2 @@
-(ns algebra.ep-test
+(ns ep-test
   (:require [algebra.symmetry-groups ]))

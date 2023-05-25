@@ -15,7 +15,7 @@
 
 
 (defn single-cycle-to-permutation-helper [c]
-  "hanldes conversion of cycle to permuatation notation
+  "Hanldes conversion of cycle to permuatation notation
    in case when cycle is just a single cycle
    e.g. (1 2 3) or (1 2) etc"
   (loop[res {} ccl c]

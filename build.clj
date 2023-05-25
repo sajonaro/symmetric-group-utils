@@ -4,7 +4,7 @@
 
 (def lib 'net.clojars.sajonaro/grutils)
 (def version "0.1.0-SNAPSHOT")
-(def main 'algebra.ep)
+(def main 'ep)
 
 (defn test "Run the tests." [opts]
   (bb/run-tests opts))
