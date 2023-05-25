@@ -20,12 +20,12 @@ native-image --report-unsupported-elements-at-runtime \
              --initialize-at-build-time \
              --no-fallback \
              -jar ./target/*.jar \
-             -H:Name=./grutils-cli
+             -H:Name=./gu
 
 
-FILE=./grutils-cli
+FILE=./gu
 if test -f "$FILE"; then
-    echo "Success! Good to run ./grutils-cli"
+    echo "Success! Good to run ./gu"
 fi
 
 

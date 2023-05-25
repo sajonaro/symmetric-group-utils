@@ -22,8 +22,8 @@ RUN native-image --report-unsupported-elements-at-runtime \
              --initialize-at-build-time \
              --no-fallback \
              -jar ./*.jar \
-             -H:Name=./grutils-cli
+             -H:Name=./gr
 
 
 
-ENTRYPOINT ["./grutils-cli"]
+ENTRYPOINT ["./gr"]

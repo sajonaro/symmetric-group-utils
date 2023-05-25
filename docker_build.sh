@@ -1,2 +1,2 @@
 #!/bin/bash 
-docker build -t sajonaro/grutils-cli:0.1 .
+docker build -t sajonaro/gu:0.1 .
