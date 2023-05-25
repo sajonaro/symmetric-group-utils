@@ -1,6 +1,6 @@
 (ns base.printing
   (:require [clojure.pprint :as pp]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io] ))
 
 
 (defn permutation-to-mapset 
@@ -43,8 +43,9 @@
 
 
 (defn print-multiplication-table 
-  " Print a multiplication table of values
-  provided in a map in following form:
+  "Print a multiplication table of values
+   provided in a map in following form:
+   
         | k1   |  k2  |  k3  |..   |kn
      -------------------------------
      k1 | 1x1  | 1x2  | 1x3  |     |1xn
@@ -56,9 +57,9 @@
      -------------------------------
      kn | nx1  | nx2  | nx3  |  .. |nxn
    
-   where 1..n are values of 'els' map
-   headers of the table are keys of 'els' map
-   and effectively, a x b means (func a b)
+   where 1..n are values of `els`- map
+   headers of the table are keys of `els` map
+   and effectively, a x b means (`func` a b)
    "
   [els func]
   (loop [i 1 res []]

@@ -3,7 +3,8 @@
    [base.permutations :as perm]
    [clojure.pprint :as pp]
    [base.printing :as prnt]
-   [clojure.java.io :as io]))
+   [clojure.java.io :as io]
+   [base.common :as com]))
 
 (defn are-equal-cycles
   "True iff arguments are equivalent Sn group elements,
@@ -81,6 +82,19 @@
      (zipmap
       '(g1 g2 g3 g4 g5)
       (next (perm/gen-permutations '(1 2 3))))))
+
+
+
+(defn get-sn-map
+  "generate map of group members oof Sn"
+  [n]
+    (merge
+     {\e (range 1 (inc n))} ;;; e*g=g*e, for any g in S3
+     (zipmap
+      (map #(str \g %) (range 1 (com/factorial n)))
+      (next (perm/gen-permutations (range 1 (inc n)))))))
+
+      (map #(str \g %) (range 1 10))
 
 ;;;(def path "../../resources/output/s3.txt")
 

@@ -35,3 +35,11 @@
 
 ;;;example
 (conjat ['(1)] '('(3) '(4)))
+
+
+(defn factorial
+  [n]
+  (loop[r n res 1]
+   (if (= r 1)
+     res
+     (recur (dec r)  (* res r)))))
