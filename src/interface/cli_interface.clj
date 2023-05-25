@@ -37,12 +37,11 @@
 
 
 (defn get-gr-mems 
-  "perm/get-all-group-members cli interface"
+  "Print all Sn group members with labels  "
   [args]
   (->> args
-       (extract-arg-values #(Integer/parseInt %))
-       first
-       sg/get-all-group-members 
+       extract-int
+       sg/get-sn-map   
        println))
 
 (defn cayley

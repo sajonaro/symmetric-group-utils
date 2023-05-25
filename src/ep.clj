@@ -47,7 +47,11 @@
                                |    | :e | g1 |
                                |----+----+----|
                                | :e | :e | g1 |
-                               | g1 | g1 | :e |"]
+                               | g1 | g1 | :e |"
+                              
+                              "for N larger 3 use redirection
+                               e.g. N = 4:
+                               ./gu cayley 4 >> out.txt"]
                    :runs cli/cayley}
                  ]} )
 
