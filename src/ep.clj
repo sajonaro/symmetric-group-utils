@@ -39,6 +39,7 @@
                   {:command     "cayley"
                    :description "Print the Cayley-table for Sn group, N is command's argument"
                    :examples ["cayley 2 -->
+                               
                                Group members:  
                                {e (1 2), g1 (2 1)}
 

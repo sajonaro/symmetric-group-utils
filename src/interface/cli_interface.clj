@@ -51,6 +51,7 @@
   (let [n (extract-int args)]
    (do  (println "Group members: ")
         (println (sg/get-sn-map n))
+        (println)
         (println "Cayley table:")
         (prnt/print-multiplication-table
           (sg/get-sn-map n)
