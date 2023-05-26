@@ -16,6 +16,8 @@
        (extract-arg-values #(Integer/parseInt %))
        first))
 
+
+
 ;;;interface to logic
 (defn p2c
   "perm/permutation-to-ccl cli interface"
@@ -25,7 +27,6 @@
        perm/permutation-to-ccl 
        println )) 
 
-
 (defn c2m
   "perm/ccl-to-matrix cli interface"
   [args]
@@ -34,7 +35,6 @@
        first
        perm/ccl-to-matrix
        perm/print-matrix))
-
 
 (defn get-gr-mems 
   "Print all Sn group members with labels  "
@@ -56,4 +56,10 @@
           (sg/get-sn-map n)
           perm/dot))))
 
-
+(defn get-conj-classes
+  "Break Sn down into conjugacy classes"
+  [args]
+  (->> args
+       extract-int
+       sg/get-conjugacy-classes
+       println))

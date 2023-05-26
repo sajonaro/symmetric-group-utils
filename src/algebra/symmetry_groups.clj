@@ -4,7 +4,9 @@
    [clojure.pprint :as pp]
    [base.printing :as prnt]
    [clojure.java.io :as io]
-   [base.common :as com]))
+   [base.partitions :as part]
+   [base.common :as com]
+   [base.permutations :as p]))
 
 (defn are-equal-cycles
   "True iff arguments are equivalent Sn group elements,
@@ -42,68 +44,49 @@
   (apply max g))
 
 
-(defn pick-next-group-member
-  "Return next group element to `g`, assuming group elements
-   are sorted by alphabetic order"
-  [g]
-  (loop[c (get-all-group-members (get-group-dimension g)) fst (first c) ]
-   (if (are-equal-permutations (first c) g)
-         (if (seq (rest c))
-               (first (rest c))
-             fst)
-       (recur (rest c) fst))))
 
-;;;TODO hangs!!
-;;;(pick-next-group-member '(1 2 3))
+(defn- parse-int [s]
+  (if (= "" (subs s 1))
+    0
+    (Integer/parseInt (subs s 1))))
 
-(defn get-conjugacy-classes 
+
+(parse-int "e")
+
+(defn get-sn-map
+  "generate map of group members oof Sn"
+  ([n _ _]
+  (merge
+    {"e" (range 1 (inc n))} ;;; e*g=g*e, for any g in S3
+    (zipmap
+      (map #(str \g %) (range 1 (com/factorial n)))
+      (next (perm/gen-permutations (range 1 (inc n)))))))
+  ([n _]
+   "Arity 2 only used to sort collection by integer postfix"
+    (sort-by key
+             #(compare (parse-int %1)
+                       (parse-int %2))
+             (get-sn-map n nil nil)))
+  ([n]
+     "Arity 1 used to convert array into map"
+      (zipmap
+       (map first (get-sn-map n nil))
+       (map last (get-sn-map n nil)))))
+
+(defn get-sn-map-cycles
+  "get group memebrs in cycle notation"
+  [n]
+  (com/map-transform (get-sn-map n) perm/permutation-to-ccl))
+
+
+
+(defn get-conjugacy-classes
   "Break down  all elements of the group S(N = order)into conjugacy classes
    
    def: permutations a and b are in one conjugacy class if there exists a group
    member c (permutation) such that a = cbc^-1  
-
-   s       :  m1 ->                       m2
-   x s x-1 : xm1 -> [(xsx-1)(xm1)=xsm1=] xm2 
-    
-   e.g:
-
-   order = 3 -> (1 2 3)"
+  
+   Also it means a and b have same cycle type "
   [order]
-  (  for[ a (perm/gen-permutations (range 1 (inc order)))
-          b (perm/gen-permutations (range 1 (inc order))) ]
-      (perm/dot a b)))
-
-(get-conjugacy-classes 3)
-
-
- (def s3members
-   (merge
-     {:e '(1 2 3)} ;;; e*g=g*e, for any g in S3
-     (zipmap
-      '(g1 g2 g3 g4 g5)
-      (next (perm/gen-permutations '(1 2 3))))))
-
-
-
-(defn get-sn-map
-  "generate map of group members oof Sn"
-  [n]
-    (merge
-     {\e (range 1 (inc n))} ;;; e*g=g*e, for any g in S3
-     (zipmap
-      (map #(str \g %) (range 1 (com/factorial n)))
-      (next (perm/gen-permutations (range 1 (inc n)))))))
-
-      (map #(str \g %) (range 1 10))
-
-;;;(def path "../../resources/output/s3.txt")
-
-  ;;;print group details into file
-;;;(pp/pprint s3members (io/writer path))
-
-;;; print group multiplication table
-;;; (prnt/multiplication-table-print-to-file
-;;; s3members;;
-;;; path
-;;; true)
-;;;
+  (group-by #(sort (map count (val %)))
+            (get-sn-map-cycles order)))

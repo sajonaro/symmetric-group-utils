@@ -43,3 +43,10 @@
    (if (= r 1)
      res
      (recur (dec r)  (* res r)))))
+
+
+(defn map-transform 
+  "transform a map `map-arg` with `transform-func` function"
+  [map-arg transform-func]
+  (into {} (for [[k v] map-arg]
+             [k (transform-func v)])))

@@ -5,10 +5,6 @@
    [cli-matic.core :refer [run-cmd]]))
 
 
-(defn x 
-  [a]
-  (println (str a)))
-
 ;;;definition of what CLI tool can do
 (def CONF
   {:command     "gu"
@@ -22,8 +18,7 @@
                   :runs        cli/p2c}
                  
                  {:command     "c2m"
-                  :description "Convert a cycle into matrix form 
-                                i.e get a matrix representation for a cycle"
+                  :description "Convert a cycle into matrix form i.e get a matrix representation for a cycle"
                   :examples [ "./gu c2m '((1 2)(3))' -->
                                [[0 1 0]
                                 [1 0 0]
@@ -35,6 +30,15 @@
                   :examples ["./gu get-gr-mems 3  -->
                                (((3) (2) (1)) ((3 2) (1)) ((3) (2 1)) ((2 3 1)) ((3 2 1)) ((2) (3 1)))"]
                   :runs cli/get-gr-mems}
+                 
+                 {:command "get-conj-cls"
+                  :description "Get Sn group broken down into conjugacy classes"
+                  :examples ["./gu get-conj-cls 3  -->
+                               
+                              {(1 1 1) [[e ((3) (2) (1))]],
+                               (1 2)   [[g1 ((3 2) (1))] [g4 ((3) (2 1))] [g5 ((2) (3 1))]],
+                               (3)     [[g3 ((2 3 1))] [g4 ((3 2 1))]]}"]
+                  :runs cli/get-conj-classes}
                  
                   {:command     "cayley"
                    :description "Print the Cayley-table for Sn group, N is command's argument"
@@ -48,8 +52,9 @@
                                |----+----+----|
                                | :e | :e | g1 |
                                | g1 | g1 | :e |"
-                              
-                              "for N larger 3 use redirection
+                              "                   
+                              "
+                              "For N larger 3 you can use redirection
                                e.g. N = 4:
                                ./gu cayley 4 >> out.txt"]
                    :runs cli/cayley}

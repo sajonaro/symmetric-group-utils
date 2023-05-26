@@ -22,7 +22,7 @@
 ;;; (2,1,1) - > (2,2)
 ;;; (3) -> (3)
 ;;; note: overall sum of elements remains constant
-(defn fold-last
+(defn- fold-last
   ([coll]
    (let [cnt (count coll)
          n-th (last coll)
@@ -93,6 +93,8 @@
 ;;;some tests
 
 (gen-partitions 4)
+
+(gen-partitions 6)
 
 (fold-last '(4 4))
 
