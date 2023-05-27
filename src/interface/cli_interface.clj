@@ -2,7 +2,9 @@
    (:require 
     [base.permutations :as perm]
     [algebra.symmetry-groups :as sg]
-    [base.printing :as prnt]))
+    [base.printing :as prnt]
+    [clojure.pprint :as pp]
+    [base.common :as com]))
 
 
 (defn extract-arg-values
@@ -61,5 +63,6 @@
   [args]
   (->> args
        extract-int
-       sg/get-conjugacy-classes
-       println))
+       sg/get-conjugacy-classes 
+       prnt/print-datatable))
+

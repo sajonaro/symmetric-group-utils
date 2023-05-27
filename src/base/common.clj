@@ -45,8 +45,8 @@
      (recur (dec r)  (* res r)))))
 
 
-(defn map-transform 
+(defn map-val-transform 
   "transform a map `map-arg` with `transform-func` function"
-  [map-arg transform-func]
+  [transform-func map-arg]
   (into {} (for [[k v] map-arg]
              [k (transform-func v)])))

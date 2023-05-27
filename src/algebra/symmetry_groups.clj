@@ -1,12 +1,7 @@
 (ns algebra.symmetry-groups
   (:require 
    [base.permutations :as perm]
-   [clojure.pprint :as pp]
-   [base.printing :as prnt]
-   [clojure.java.io :as io]
-   [base.partitions :as part]
-   [base.common :as com]
-   [base.permutations :as p]))
+   [base.common :as com]))
 
 (defn are-equal-cycles
   "True iff arguments are equivalent Sn group elements,
@@ -76,7 +71,7 @@
 (defn get-sn-map-cycles
   "get group memebrs in cycle notation"
   [n]
-  (com/map-transform (get-sn-map n) perm/permutation-to-ccl))
+  (com/map-val-transform perm/permutation-to-ccl (get-sn-map n)))
 
 
 
@@ -88,5 +83,8 @@
   
    Also it means a and b have same cycle type "
   [order]
-  (group-by #(sort (map count (val %)))
-            (get-sn-map-cycles order)))
+  (->> order
+       get-sn-map-cycles
+       (group-by #(sort (map count (val %))))
+       ;;into {} (cat (map identity)) untangles nested vector
+       (com/map-val-transform #(into {} (cat (map identity)) %))))

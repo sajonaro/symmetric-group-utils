@@ -98,3 +98,12 @@
   [stuff filename]
   (with-open [w (io/writer filename :append false)]
     (.write w (str stuff))))
+
+
+(defn print-datatable
+  [data-map]
+  (doseq [k (keys data-map)]
+    (do
+      (println k)
+      (pp/print-table [(get data-map k)])
+      (println))))
