@@ -5,39 +5,33 @@ functions helping explore problems related to symmetric group Sn  (https://en.wi
 <br/>
 <br/>
 
-### how to use this library?
+### how to use this project?
 
-- reference io.github.sajonaro/symmetric-group-utils library via deps.edn
-- reference needed namespaces from the library in your client source code
-<br/>
-
-example:
-
-
-- in deps.edn:
+#### as a library
+reference io.github.sajonaro/symmetric-group-utils library via deps.edn
 ```
 {:deps
  {io.github.sajonaro/symmetric-group-utils {:git/tag "v0.0.1" :git/sha "cb6762a"}}}
 ``` 
-
 <br/>
-<br/>
-
-### to build a cli service locally 
-- run:
+#### as a stanalone cli application
+- install GraalVM (to be able to generate native app)
+- clone the repository, update path to GraalVM in build-cli_local.sh
+- execute build-cli_local.sh script to build cli application:
 ```
 sudo chmod +x build-cli_local.sh
 ./build-cli_local.sh
 
 ```
-- then one can run grutils-cli application like so:
+- You can now use cli application like so:
 ```
-./grutils-cli -h
+./gu -?
 
 ```
 <br/>
 
 ### to build a cli service as docker container 
+- prerequisites: docker installed
 - run: sudo docker_build.sh
 - then: sudo docker_run.sh
 
