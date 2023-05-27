@@ -11,7 +11,7 @@ functions helping explore problems related to symmetric group Sn  (https://en.wi
 via deps.edn
 ```
 {:deps
- {io.github.sajonaro/symmetric-group-utils {:git/tag "v0.0.1" :git/sha "cb6762a"}}}
+ {io.github.sajonaro/symmetric-group-utils {:git/tag "v0.0.2" :git/sha "757cfe8"}}}
 ``` 
 <br/>
 
