@@ -8,7 +8,7 @@ functions helping explore problems related to symmetric group Sn  (https://en.wi
 ### how to use this project?
 
 #### as a library
-reference io.github.sajonaro/symmetric-group-utils library via deps.edn
+via deps.edn
 ```
 {:deps
  {io.github.sajonaro/symmetric-group-utils {:git/tag "v0.0.1" :git/sha "cb6762a"}}}
