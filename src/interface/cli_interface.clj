@@ -88,3 +88,12 @@
        extract-integers
        sg/get-order-p
        println))
+
+
+(defn p2t
+   "convert cycle into permutation (sequence)"
+  [cli-args]
+  (->> cli-args
+       extract-integers
+       perm/permutation-to-transposition
+       println))

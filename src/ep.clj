@@ -19,9 +19,20 @@
                  
                   {:command     "c2p"
                    :description "Convert a permutation from cycle to squence (permutation) form "
-                   :examples    ["./gu c2p '((1 2 3))'         -->  2 3 1"
-                                 "./gu c2p '((1 2)(3 4))'    -->  2 1 4 3"]
+                   :examples    ["./gu c2p '((1 2 3))'         --> 
+                                                                   2 3 1"
+                                 "./gu c2p '((1 2)(3 4))'    -->  
+                                                                   2 1 4 3"]
                    :runs        cli/c2p}
+                 
+                 {:command     "p2t"
+                  
+                  :description "Convert a permutation into product of transpositions "
+                  :examples    ["./gu p2t 2 3 1       --> 
+                                                          '((1 3)(1 2))'"
+                                "./gu p2t 2 1 4 3     -->
+                                                          '((1 2)(3 4))'"]
+                  :runs        cli/p2t}
 
                  {:command     "get-order"
                   :description "Get order of a permutation. i.e. N such that p^N = e "

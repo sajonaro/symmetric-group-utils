@@ -78,7 +78,8 @@
 (defn dot-cycle-per-number
   "Apply the permutation `ccl` to individual number `n`"
   [ccl n]
-  (dot-permutation-per-number (ccl-to-pmtn ccl) n))
+  (dot-permutation-per-number  (ccl-to-pmtn ccl) n))
+
 
 
 (defn insert-in-tuple-n-th
@@ -236,3 +237,24 @@
       (cons (last tmp) (take (dec (count tmp)) tmp))
       (dec i))
      res)))
+
+(defn factorize-single-cycle
+  "Factorize cycle consisting of singe cycle
+   '(1 2 3) - > ((1 3)(1 2))"
+  ([ccl-list]
+   (reverse (factorize-single-cycle ccl-list nil)))
+  ([ccl-list _]
+   (loop [f (first ccl-list) res ccl-list output '()]
+     (if (> (count res) 1)
+       (recur f (butlast res) (conj output (list f (last res))))
+       output))))
+
+
+(defn permutation-to-transposition
+  "Convert `permutation-list` into product of transpositions"
+  [permutaion-list]
+  (reduce  #(if (= 1 (count %2))
+              (cons %2 %1)
+              (concat %1 (factorize-single-cycle %2)))
+           '()
+           (permutation-to-ccl permutaion-list)))
