@@ -2,54 +2,60 @@
    (:require 
     [base.permutations :as perm]
     [algebra.symmetry-groups :as sg]
-    [base.printing :as prnt]
-    [clojure.pprint :as pp]
-    [base.common :as com]))
+    [base.printing :as prnt]))
 
 
 (defn extract-arg-values
   "extract value from edn cli parameter"
-  [func edn-data]
-  (map func (get-in edn-data [:_arguments])))
+  [func cli-args]
+  (map func (get-in cli-args [:_arguments])))
+
+
+(defn extract-integers
+  [cli-args]
+  (extract-arg-values #(Integer/parseInt %) cli-args))
 
 (defn extract-int
-  [args] 
-  (->> args 
-       (extract-arg-values #(Integer/parseInt %))
-       first))
+  [cli-args] 
+ (first (extract-integers cli-args)))
 
+
+(defn extract-string
+  [cli-args]
+  (->> cli-args 
+       (extract-arg-values #(clojure.edn/read-string %))
+       first))
 
 
 ;;;interface to logic
 (defn p2c
   "perm/permutation-to-ccl cli interface"
-  [args] 
-  (->> args 
-       (extract-arg-values #(Integer/parseInt %)) 
+  [cli-args] 
+  (->> cli-args 
+       extract-integers
        perm/permutation-to-ccl 
        println )) 
 
 (defn c2m
   "perm/ccl-to-matrix cli interface"
-  [args]
-  (->> args
-       (extract-arg-values #(clojure.edn/read-string %))
-       first
+  [cli-args]
+  (->> cli-args
+       extract-string
        perm/ccl-to-matrix
        perm/print-matrix))
 
 (defn get-gr-mems 
   "Print all Sn group members with labels  "
-  [args]
-  (->> args
+  [cli-args]
+  (->> cli-args
        extract-int
        sg/get-sn-map   
        println))
 
 (defn cayley
   "ptint cayley table for group Sn, n extracted from args"
-  [args]
-  (let [n (extract-int args)]
+  [cli-args]
+  (let [n (extract-int cli-args)]
    (do  (println "Group members: ")
         (println (sg/get-sn-map n))
         (println)
@@ -60,9 +66,25 @@
 
 (defn get-conj-classes
   "Break Sn down into conjugacy classes"
-  [args]
-  (->> args
+  [cli-args]
+  (->> cli-args
        extract-int
        sg/get-conjugacy-classes 
        prnt/print-datatable))
 
+(defn c2p
+  "convert cycle into permutation (sequence)"
+  [cli-args]
+  (->> cli-args
+       extract-string
+       perm/ccl-to-pmtn
+       prnt/permutation-print))
+
+
+(defn get-order
+  "convert cycle into permutation (sequence)"
+  [cli-args]
+  (->> cli-args
+       extract-integers
+       sg/get-order-p
+       println))

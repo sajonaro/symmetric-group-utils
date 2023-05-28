@@ -88,3 +88,17 @@
        (group-by #(sort (map count (val %))))
        ;;into {} (cat (map identity)) untangles nested vector
        (com/map-val-transform #(into {} (cat (map identity)) %))))
+
+(defn get-unity
+  "Get a unity permutation corresponding to group element `g` (permutation) "
+  [g]
+  (range 1 (inc (get-group-dimension g))))
+
+
+(defn get-order-p
+  "determine order of a permucation `permutation` (list)"
+  [permutation]
+  (loop[res 1  k permutation unity (get-unity permutation)]
+   (if (are-equal-permutations k unity)
+     res
+     (recur (inc res) (perm/dot k permutation) unity))))

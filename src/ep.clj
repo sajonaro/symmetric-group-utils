@@ -17,8 +17,21 @@
                                 "./gu p2c 2 1 4 3    -->    (1 2)(3 4)"]
                   :runs        cli/p2c}
                  
+                  {:command     "c2p"
+                   :description "Convert a permutation from cycle to squence (permutation) form "
+                   :examples    ["./gu c2p '((1 2 3))'         -->  2 3 1"
+                                 "./gu c2p '((1 2)(3 4))'    -->  2 1 4 3"]
+                   :runs        cli/c2p}
+
+                 {:command     "get-order"
+                  :description "Get order of a permutation. i.e. N such that p^N = e "
+                  :examples    ["./gu get-order 2 3 1      -->    3"
+                                "./gu get-order 2 1 4 3    -->    2"]
+                  :runs        cli/get-order}
+                 
                  {:command     "c2m"
-                  :description "Convert a cycle into matrix form i.e get a matrix representation for a cycle"
+                  :description "Convert a cycle into matrix form 
+                                i.e get a matrix representation for a cycle"
                   :examples [ "./gu c2m '((1 2)(3))' -->
                                [[0 1 0]
                                 [1 0 0]
@@ -60,6 +73,8 @@
                    :runs cli/cayley}
                  ]} )
 
+
+;;;CLI entry point
 (defn -main 
   [& args]
   (run-cmd args CONF))
