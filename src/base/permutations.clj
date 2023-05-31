@@ -53,7 +53,7 @@
 
 
 
-(defn ccl-to-pmtn [ccl]
+(defn ccl-to-pmtn 
   "convert cycle to permutation
    i.e. a group Sn element from cycle to 
    permutation notation
@@ -65,6 +65,7 @@
    '((3 2 1))='((1 3 2))='((2 1 3))        -> (3 1 2)
    '((1)(2)(3))='((3)(2)(1))..             -> (1 2 3)
    Note, cycle is evaluated from left to right  "
+  [ccl]
   ( ->> (map single-cycle-to-permutation-helper ccl)
         (apply merge)
         (into (sorted-map))
@@ -143,15 +144,24 @@
    (1 2)(3), (1 2 3)          ->  (1 3 2)
    (1 2 3),(1 2)(3)           ->  (3 2 1)
    (1 3)(2),(1 3)(2)          ->  (1 2 3)
-   (1 2 3)(1 2 3)             ->  (3 1 2)"
+   (1 2 3)(1 2 3)             ->  (3 1 2)
+   
+   NB this is left to right multiplication"
   ([c] c)
   ([c1 c2]
    (let [a (ccl-to-pmtn c1)
          b (ccl-to-pmtn c2)]
      (permutation-to-ccl (dot a b))))
   ([c1 c2 & more]
-   (permutation-to-ccl (reduce dot-cycles (dot-cycles c1 c2) (reverse more)))))
+   (let [init (dot-cycles c1 c2)]
+     permutation-to-ccl (reduce dot-cycles init (reverse more)))))
 
+
+  
+(dot-cycles '((1 2 3)) '((1 2 3)) '((1 2 3)) )
+(dot-cycles '((3 2 1)) '((1 2 3)))
+
+(reverse '((1 2 3)))
 ;;;for a P calculate R = P^(-1)
 ;;;(such that p*r = i = r*p)
 ;;; e.g. (2 1 3) -> (2 1 3)
@@ -238,7 +248,7 @@
       (dec i))
      res)))
 
-(defn factorize-single-cycle
+(defn- factorize-single-cycle
   "Factorize cycle consisting of singe cycle
    '(1 2 3) - > ((1 3)(1 2))"
   ([ccl-list]
@@ -249,12 +259,40 @@
        (recur f (butlast res) (conj output (list f (last res))))
        output))))
 
+(defn factorize-identity
+  "factorize identities like (`n`), turning them into ('n' k)('n' k)
+   where  1<= k <= `order` and k!= `n`"
+  [order n]
+  (if (< n order) 
+    (list (list n (inc n))(list (inc n) n))
+    (list (list n 1) (list 1 n))))
+
+(list 2 (inc 3))
 
 (defn permutation-to-transposition
   "Convert `permutation-list` into product of transpositions"
   [permutaion-list]
   (reduce  #(if (= 1 (count %2))
-              (cons %2 %1)
+              (concat %1 (factorize-identity (apply max permutaion-list) (first %2)))
               (concat %1 (factorize-single-cycle %2)))
            '()
            (permutation-to-ccl permutaion-list)))
+
+
+(defn single-transposition-to-full-cycle
+  " (3 2) , 4  -->  (1)(3 2)(4)"
+  [tr order]
+  (loop[n 1 res (list tr)]
+   (if (> n order)
+       res
+     (recur (inc n) (if (sets/has? tr n) res (conj res (list n)))))))
+
+
+(defn transposition-to-permutaton
+  "Convert a `transposition` to permutation 
+   e.g 
+   '((2 1)(2 3)) --> '(2 3 1) 
+   NB multiplication is affected from left to right"
+  ([transposition]
+   (let [n (count (distinct (flatten transposition)))]
+     (ccl-to-pmtn (apply dot-cycles (map #(single-transposition-to-full-cycle % n) transposition))))))

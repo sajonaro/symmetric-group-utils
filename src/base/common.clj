@@ -33,9 +33,6 @@
     (conjat (conj col_a (first col_b)) (rest col_b))
     col_a))
 
-;;;example
-(conjat ['(1)] '('(3) '(4)))
-
 
 (defn factorial
   [n]
@@ -50,3 +47,21 @@
   [transform-func map-arg]
   (into {} (for [[k v] map-arg]
              [k (transform-func v)])))
+
+(defn exp-int
+ "return x^n"
+ [x n]
+ (reduce * (repeat n x)))
+
+(defn lazo
+  "Boilerplate for (otherwise) boring loop
+   repeating `n-times` times, starting point of res = `init-val`, `fn-trans` - function transforming
+   res in each iteration of the loop, `fn-trans` takes res as argument and returns res
+   
+   e.g. to sum numbers from 1 to 10
+   use (lazo inc 0 10) "
+  [fn-trans init-val n-times]
+  (loop[i 1 res init-val]
+    (if (> i n-times)
+      res 
+    (recur (inc i) (fn-trans res)))))

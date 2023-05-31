@@ -102,3 +102,15 @@
    (if (are-equal-permutations k unity)
      res
      (recur (inc res) (perm/dot k permutation) unity))))
+
+
+(defn get-sign
+    "determine sign of permutations"
+  [permutation]
+  (com/exp-int -1
+               (reduce
+                 #(if (> (count %2) 1) (inc %1))
+                 0
+                 (perm/permutation-to-transposition permutation))))
+
+

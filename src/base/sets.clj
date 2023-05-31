@@ -2,7 +2,7 @@
 
 
 (defn has? 
-  "True if `col` contains `el`, false otherwise."
+  "`true` if `col` contains `el`, `false` otherwise."
   [col el]
   (loop[tmp col]
    (if (and (seq tmp) (not= (first tmp) el))
