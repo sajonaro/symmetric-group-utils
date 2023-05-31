@@ -16,7 +16,6 @@
       (= '(2 3 1) (perm/dot [1 2 3] [1 2 3] [2 3 1]))))))
 
 
-;;TODO fix thid case (perm/ccl-to-pmtn '((2 1) (2 3))!!
 (deftest ccl-to-pmtn-tests
   (testing "ccl-to-pmtn"
     (is
@@ -27,7 +26,7 @@
       (= '(3 2 1) (perm/ccl-to-pmtn '((1 3) (2))))
       (= '(1 2 3) (perm/ccl-to-pmtn '((1) (3) (2))))
       (= '(2 3 1) (perm/ccl-to-pmtn '((2 3 1))))
-      (= '(2 3 1) (perm/ccl-to-pmtn '((2 1) (2 3))))))))
+      (= '(2 3 1) (perm/ccl-to-pmtn  (perm/dot-cycles '((3) (2 1)) '((1)(2 3)))))))))
 
 
 (deftest dot-permutation-per-number-tests
@@ -101,9 +100,19 @@
                ['(1 2 3) '(3 1 2) '(2 3 1)])))) 
 
 
+
+;;;TODO fix
 (deftest perm-to-transp-test
   (testing "perm-to-transp-test"
-          (is (= '((1) (6 5) (3 2) (3 4))
+          (is (= '((6 5) (3 2) (3 4) (1 2) (2 1))
                  (perm/permutation-to-transposition '(1 3 4 2 6 5))))))
 
 
+(deftest transposition-to-permutaton-test
+  (testing "transposition to permutation"
+     (is 
+       (and
+         (= (transposition-to-permutaton '((2 1) (2 3)))
+            (transposition-to-permutaton '((2 1) (1 2) (2 3) (2 1))) )
+        
+         (= (transposition-to-permutaton '((2 1) (2 3))) '(2 3 1))))))
