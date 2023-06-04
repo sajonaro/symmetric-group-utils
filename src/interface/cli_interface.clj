@@ -97,3 +97,24 @@
        extract-integers
        perm/permutation-to-transposition
        println))
+
+(defn matrix-mult
+  ""
+   [cli-args]
+  (->> "matrix multiplication"
+       println))
+
+
+(defn cg
+  ""
+  [cli-args]
+  (->> "cayley graph"
+       println))
+
+(defn get-sign
+  ""
+  [cli-args]
+  (->> cli-args
+       extract-integers
+       sg/get-sign
+       println))

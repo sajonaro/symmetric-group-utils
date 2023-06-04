@@ -73,7 +73,8 @@
                  }
                  
                  {:command "get-sign"
-                  :description "Get sign of a permutation p, i.e. (-1)^K, where K is number of transpositions
+                  :description "Get sign of a permutation p, i.e. (-1)^K, where K is the
+                                number of transpositions
                                 P= t1*t2..tK"
                   :examples ["./gu get-sign 1 3 2 --> -1 "]
                   :runs cli/get-sign}
@@ -95,8 +96,24 @@
                              "For N larger 3 you can use redirection
                                e.g. N = 4:
                                ./gu cayley 4 >> out.txt"]
-                  :runs cli/cayley}]} )
-
+                  :runs cli/cayley} 
+                  
+                  {:command     "cg"
+                  :description "Generate the Cayley-graph ( in .dot format) for Sn group,
+                                N is command's argument
+                                Check:
+                                https://www.graphviz.org/
+                                https://en.wikipedia.org/wiki/Cayley_graph"
+                  :examples ["cg 2 -->
+                               
+                                  strict graph { 
+                                    (1 2) -- (2 1)
+                                  }
+                              
+                              "
+                             "to visualize the output use graphviz tool 
+                              e.g.: ./gu cg 4 | dot -Tsvg -o .svg"]
+                  :runs cli/cg}]} )
 
 ;;;CLI entry point
 (defn -main 

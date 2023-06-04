@@ -156,12 +156,6 @@
    (let [init (dot-cycles c1 c2)]
      permutation-to-ccl (reduce dot-cycles init (reverse more)))))
 
-
-  
-(dot-cycles '((1 2 3)) '((1 2 3)) '((1 2 3)) )
-(dot-cycles '((3 2 1)) '((1 2 3)))
-
-(reverse '((1 2 3)))
 ;;;for a P calculate R = P^(-1)
 ;;;(such that p*r = i = r*p)
 ;;; e.g. (2 1 3) -> (2 1 3)
@@ -267,7 +261,6 @@
     (list (list n (inc n))(list (inc n) n))
     (list (list n 1) (list 1 n))))
 
-(list 2 (inc 3))
 
 (defn permutation-to-transposition
   "Convert `permutation-list` into product of transpositions"
